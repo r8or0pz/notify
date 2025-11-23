@@ -15,8 +15,8 @@ Your task is to provide one SHORT, non-obvious, and highly practical tip (a "got
 
 The tip MUST cover a complex or niche topic, such as:
 1.  **Dependency Management/Supply Chain Security** (e.g., hash pinning, lock file usage, vulnerability scanning tools).
-2.  Niche Kubernetes features (e.g., Pod disruption budgets, ephemeral containers for debugging).
-3.  Advanced Bash/Zsh scripting (e.g., process substitution, complex pipeline tricks).
+2.  Niche Kubernetes features (e.g., Pod disruption budgets, ephemeral containers for debugging), scaling, security, networking.
+3.  Advanced Bash/Zsh scripting (e.g., process substitution, complex pipeline tricks and so on).
 4.  Infrastructure as Code (IaC) principles (e.g., Terraform module composition, drift detection).
 5.  Hidden features or performance tuning in Docker/containerd (e.g., buildx, rootless mode, or overlayfs specifics).
 
