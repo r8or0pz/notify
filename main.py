@@ -8,6 +8,7 @@ import requests
 import google.generativeai as genai
 
 TIP_DELIMITER: str = "---TIP_DELIMITER---"
+PROMPTS_FILE: str = 'prompts.txt'
 
 
 class Notifyr:
@@ -17,14 +18,14 @@ class Notifyr:
         genai.configure(api_key=os.environ["GEMINI_API_KEY"])
         self.model: genai.GenerativeModel = genai.GenerativeModel(os.environ['GENERATIVE_MODEL'])
         self.topic: str = os.environ["NOTIFICATION_TOPIC"]
-        self.notification_title: str = os.environ.get("NOTIFICATION_TITLE", "🔒 DevOps/SRE Tip")
+        self.notification_title: str = os.environ.get("NOTIFICATION_TITLE", "� DevOps/SRE Tip")
         self.requested_tips: int = int(os.environ.get("NUMBER_OF_TIPS", 1))
         self.topics: List[str] = self.load_prompts()
 
     @staticmethod
     def load_prompts() -> List[str]:
         """Return non-empty lines from prompts.txt as topics."""
-        with open(os.path.join(os.path.dirname(__file__), 'prompts.txt'), 'r') as f:
+        with open(os.path.join(os.path.dirname(__file__), PROMPTS_FILE), 'r') as f:
             return [line.strip() for line in f if line.strip()]
 
     def generate_content(self, selected_topics: List[str]) -> str:
