@@ -1,0 +1,36 @@
+name: Daily DevOps Tip
+
+on:
+  schedule:
+    # Runs every day at 07:00 UTC
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-tip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      # --- START: uv Locking Implementation ---
+      - name: Install uv Binary ⚡
+        # Installs uv via pip into the environment
+        run: pip install uv
+
+      - name: Install dependencies from lock file 🔒
+        # uv sync installs packages based on the uv.lock file
+        # We assume you have committed pyproject.toml and uv.lock
+        run: uv sync
+      # --- END: Locking Implementation ---
+
+      - name: Run script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # uv run executes the script in the project environment
+        run: uv run python main.py
