@@ -2,34 +2,61 @@ name: Daily DevOps Tip
 
 on:
   schedule:
-    # Runs every day at 07:00 UTC
-    - cron: '0 7 * * *'
+    # Randomization logic in job determines if it actually runs
+    - cron: '0 6 * * *'
+    - cron: '0 8 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 12 * * *'
+    - cron: '0 14 * * *'
+    - cron: '0 16 * * *'
+    - cron: '0 18 * * *'
+    - cron: '0 21 * * *'
   workflow_dispatch:
 
 jobs:
   send-tip:
     runs-on: ubuntu-latest
     steps:
+      - name: Random execution decision 🎲
+        id: random
+        run: |
+          # Random number between 0-3
+          # Only proceed if we get 0 (25% chance per trigger = ~2 runs per day)
+          RANDOM_NUM=$((RANDOM % 4))
+          echo "Generated: $RANDOM_NUM"
+          if [ $RANDOM_NUM -eq 0 ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            echo "✅ Proceeding with tip generation"
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Skipping this run"
+          fi
+
       - name: Checkout code
+        if: steps.random.outputs.should_run == 'true'
         uses: actions/checkout@v3
 
       - name: Set up Python
+        if: steps.random.outputs.should_run == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: '3.13'
 
       # --- START: uv Locking Implementation ---
       - name: Install uv Binary ⚡
+        if: steps.random.outputs.should_run == 'true'
         # Installs uv via pip into the environment
         run: pip install uv
 
       - name: Install dependencies from lock file 🔒
+        if: steps.random.outputs.should_run == 'true'
         # uv sync installs packages based on the uv.lock file
         # We assume you have committed pyproject.toml and uv.lock
         run: uv sync
       # --- END: Locking Implementation ---
 
       - name: Run script
+        if: steps.random.outputs.should_run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GENERATIVE_MODEL: ${{ vars.GENERATIVE_MODEL }}
